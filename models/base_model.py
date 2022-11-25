@@ -13,10 +13,11 @@ class BaseModel:
 
     def __int__(self, *args, **kwargs):
         if not kwargs:
+            from models import storage
             self.id = str(uuid4())
             self.created_at = datetime.now()
             self.updated_at = datetime.now()
-
+            storage.new(self)
         else:
             del kwargs["__class__"]
             kwargs["created_at"] = datetime.strptime(kwargs["created_at"], "%Y-%m-%dT%H:%M:%S.%f")
@@ -32,7 +33,9 @@ class BaseModel:
 
     def save(self):
         """Updates 'self.updated_at' with the current datetime"""
+        from models import storage
         self.updated_at = datetime.now()
+        storage.save()
 
     def to_dict(self):
         """
