@@ -4,10 +4,35 @@ Console Module
 """
 
 import cmd
+import re
 import sys
 import shlex
 from models.__init__ import storage
 from models.base_model import BaseModel
+
+
+def parse_cmd(argv: str) -> list:
+    """
+    Parse or split a string (argv) based on some pattern example, spaces, brackects
+
+    :param argv: string
+    :return:  a list of words representing the parsed string
+    """
+    braces = re.search(r"\{(.*?)}", argv)
+    brackets = re.search(r"\[(.*?)]", argv)
+    if not braces:
+        if not brackets:
+            return [i.strip(",") for i in shlex.split(argv)]
+        else:
+            var = shlex.split(argv[:brackets.span()[0]])
+            retval = [i.strip(",") for i in var]
+            retval.append(brackets.group())
+            return retval
+    else:
+        var = shlex.split(argv[:braces.span()[0]])
+        retval = [i.strip(",") for i in var]
+        retval.append(braces.group())
+        return retval
 
 
 class HBNBCommand(cmd.Cmd):
@@ -108,6 +133,13 @@ class HBNBCommand(cmd.Cmd):
                 print("** class doesn't exist **")
             else:
                 print([str(obj) for obj in objects if arg_list[0] in str(obj)])
+
+    def do_update(self, argv):
+        """
+        Updates an instance based on the class name and id by adding or updating attribute
+        [USAGE]: update <classname> <id> <attribute name> "<attribute value>"
+        """
+        pass
 
 
 if __name__ == "__main__":
