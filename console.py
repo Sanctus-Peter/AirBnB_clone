@@ -74,6 +74,21 @@ class HBNBCommand(cmd.Cmd):
         'Review': Review
     }
 
+    def preloop(self):
+        """Prints if isatty is false"""
+        if not sys.__stdin__.isatty():
+            print('(hbnb)')
+
+    def postcmd(self, stop, line):
+        """Prints if isatty is false"""
+        if not sys.__stdin__.isatty():
+            print('(hbnb) ', end='')
+        return stop
+
+    def emptyline(self):
+        """ Overrides the emptyline method of CMD """
+        pass
+
     def default(self, arg):
         """Default behaviour for cmd module when input is invalid"""
         action_map = {
@@ -100,10 +115,11 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, arg):
         """Handles EOF to exit program"""
+        print()
         exit()
 
     def do_quit(self, argv):
-        """Method to exit out of HBNB console"""
+        """Quit command to exit the program"""
         exit()
 
     def do_count(self, arg):
