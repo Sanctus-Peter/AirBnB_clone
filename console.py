@@ -137,16 +137,10 @@ class HBNBCommand(cmd.Cmd):
         [USAGE]: create <classname>
         [Return]: id of the created class
         """
-        if not arg:
-            print("** class name missing **")
-            return
-        elif arg not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        instance = HBNBCommand.classes[arg]()
-        storage.save()
-        print(instance.id)
-        storage.save()
+        args = check_args(arg)
+        if args:
+            print(eval(args[0])().id)
+            storage.save()
 
     def do_show(self, argv):
         """
@@ -179,26 +173,17 @@ class HBNBCommand(cmd.Cmd):
         Deletes an instance based on the class name and id
         [USAGE]: destroy <classname> <id>
         """
-        cmd_arg = argv.partition(" ")
-        cmd_id = cmd_arg[2]
-
-        if cmd_id and " " in cmd_id:
-            cmd_id = cmd_id.partition(" ")[0]
-        if not cmd_arg[0]:
-            print("** class name is missing **")
-            return
-        if cmd_arg[0] not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        if not cmd_id:
-            print("** instance id missing **")
-            return
-        key = "{}.{}".format(cmd_arg[0], cmd_id)
-        if key in storage.all():
-            del storage.all()[key]
-            storage.save()
-        else:
-            print("** no instance found **")
+        arg_list = check_args(argv)
+        if arg_list:
+            if len(arg_list) == 1:
+                print("** instance id missing **")
+            else:
+                key = "{}.{}".format(*arg_list)
+                if key in storage.all():
+                    del storage.all()[key]
+                    storage.save()
+                else:
+                    print("** no instance found **")
 
     def do_all(self, argv):
         """
