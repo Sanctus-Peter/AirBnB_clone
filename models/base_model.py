@@ -9,7 +9,6 @@ class BaseModel:
     """A class that defines all common attributes/methods for other classes"""
 
     def __init__(self, *args, **kwargs):
-        """ """
         if not kwargs:
             from models import storage
             self.id = str(uuid4())
