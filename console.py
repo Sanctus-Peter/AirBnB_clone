@@ -65,8 +65,38 @@ class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) " if sys.__stdin__.isatty() else ""
 
     classes = {
-        "BaseModel": BaseModel
+        "BaseModel": BaseModel,
+        'User': User,
+        'Place': Place,
+        'State': State,
+        'City': City,
+        'Amenity': Amenity,
+        'Review': Review
     }
+
+    def default(self, arg):
+        """Default behaviour for cmd module when input is invalid"""
+        action_map = {
+            "all": self.do_all,
+            "show": self.do_show,
+            "destroy": self.do_destroy,
+            "count": self.do_count,
+            "update": self.do_update,
+            "create": self.do_create
+        }
+
+        match = re.search(r"\.", arg)
+        if match:
+            arg1 = [arg[:match.span()[0]], arg[match.span()[1]:]]
+            match = re.search(r"\((.*?)\)", arg1[1])
+            if match:
+                command = [arg1[1][:match.span()[0]], match.group()[1:-1]]
+                if command[0] in action_map:
+                    call = "{} {}".format(arg1[0], command[1])
+                    return action_map[command[0]](call)
+
+        print("*** Unknown syntax: {}".format(arg))
+        return False
 
     def do_EOF(self, arg):
         """Handles EOF to exit program"""
@@ -75,6 +105,15 @@ class HBNBCommand(cmd.Cmd):
     def do_quit(self, argv):
         """Method to exit out of HBNB console"""
         exit()
+
+    def do_count(self, arg):
+        """Retrieve the number of instances of a class"""
+        arg1 = parse_cmd(arg)
+        count = 0
+        for obj in storage.all().values():
+            if arg1[0] == type(obj).__name__:
+                count += 1
+        print(count)
 
     def do_create(self, arg):
         """
