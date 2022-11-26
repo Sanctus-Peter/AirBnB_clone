@@ -144,9 +144,10 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return
         instance = HBNBCommand.classes[arg]()
-        storage.save()
+        instance.save()
+        storage.reload()
         print(instance.id)
-        storage.save()
+
 
     def do_show(self, argv):
         """
@@ -242,6 +243,7 @@ class HBNBCommand(cmd.Cmd):
                 else:
                     print("** no instance found **")
             storage.save()
+            storage.reload()
 
 
 if __name__ == "__main__":
