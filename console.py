@@ -9,11 +9,18 @@ import sys
 import shlex
 from models.__init__ import storage
 from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 def parse_cmd(argv: str) -> list:
     """
-    Parse or split a string (argv) based on some pattern example, spaces, brackects
+    Parse or split a string (argv) based on some pattern
+    example, spaces, brackects
 
     :param argv: string
     :return:  a list of words representing the parsed string
@@ -54,6 +61,7 @@ def check_args(args):
 
 class HBNBCommand(cmd.Cmd):
     """functionality for HBNB console"""
+
     prompt = "(hbnb) " if sys.__stdin__.isatty() else ""
 
     classes = {
@@ -87,7 +95,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_show(self, argv):
         """
-        Prints the string representation of an instance based on the class name and id
+        Prints the string representation of an instance
+        based on the class name and id
         [USAGE]: show <classname> <id>
         """
         cmd_arg = argv.partition(" ")
@@ -153,7 +162,8 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, argv):
         """
-        Updates an instance based on the class name and id by adding or updating attribute
+        Updates an instance based on the class name and id
+        by adding or updating attribute
         [USAGE]: update <classname> <id> <attribute name> "<attribute value>"
         """
         arg_list = check_args(argv)

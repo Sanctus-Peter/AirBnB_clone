@@ -3,6 +3,14 @@
 
 import json
 
+from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.amenity import Amenity
+from models.city import City
+from models.place import Place
+from models.review import Review
+
 
 class FileStorage:
     """
@@ -39,11 +47,15 @@ class FileStorage:
         Deserializes the JSON file to __objects
         -> Only IF it exists!
         """
+        classes = {
+            'BaseModel': BaseModel, 'User': User, 'Place': Place,
+            'State': State, 'City': City, 'Amenity': Amenity,
+            'Review': Review
+        }
         try:
             with open(self.__file_path, 'r') as f:
                 jo = json.load(f)
             for key in jo:
-                pass
-                #self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
+                self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
         except FileNotFoundError:
             pass
