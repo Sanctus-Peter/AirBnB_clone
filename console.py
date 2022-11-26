@@ -35,6 +35,23 @@ def parse_cmd(argv: str) -> list:
         return retval
 
 
+def check_args(args):
+    """
+    checks if args is valid
+    Args:
+        args (str): the string containing the arguments passed to a command
+    Returns:
+        Error message if args is None or not a valid class, else the arguments
+    """
+    arg_list = parse_cmd(args)
+    if len(arg_list) == 0:
+        print("** class name missing **")
+    elif arg_list[0] not in HBNBCommand.classes:
+        print("** class doesn't exist **")
+    else:
+        return arg_list
+
+
 class HBNBCommand(cmd.Cmd):
     """functionality for HBNB console"""
     prompt = "(hbnb) " if sys.__stdin__.isatty() else ""
@@ -139,7 +156,27 @@ class HBNBCommand(cmd.Cmd):
         Updates an instance based on the class name and id by adding or updating attribute
         [USAGE]: update <classname> <id> <attribute name> "<attribute value>"
         """
-        pass
+        arg_list = check_args(argv)
+        if arg_list:
+            if len(arg_list) == 1:
+                print("** instance id missing **")
+            else:
+                instance_id = "{}.{}".format(arg_list[0], arg_list[1])
+                if instance_id in storage.all():
+                    if len(arg_list) == 2:
+                        print("** attribute name missing **")
+                    elif len(arg_list) == 3:
+                        print("** value missing **")
+                    else:
+                        obj = storage.all()[instance_id]
+                        if arg_list[2] in type(obj).__dict__:
+                            v_type = type(obj.__class__.__dict__[arg_list[2]])
+                            setattr(obj, arg_list[2], v_type(arg_list[3]))
+                        else:
+                            setattr(obj, arg_list[2], arg_list[3])
+                else:
+                    print("** no instance found **")
+            storage.save()
 
 
 if __name__ == "__main__":
