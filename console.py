@@ -148,25 +148,16 @@ class HBNBCommand(cmd.Cmd):
         based on the class name and id
         [USAGE]: show <classname> <id>
         """
-        cmd_arg = argv.partition(" ")
-        cmd_id = cmd_arg[2]
-
-        if cmd_id and " " in cmd_id:
-            cmd_id = cmd_id.partition(" ")[0]
-        if not cmd_arg[0]:
-            print("** class name is missing **")
-            return
-        if cmd_arg[0] not in HBNBCommand.classes:
-            print("** class doesn't exist **")
-            return
-        if not cmd_id:
-            print("** instance id missing **")
-            return
-        key = "{}.{}".format(cmd_arg[0], cmd_id)
-        if key not in storage.all():
-            print("** no instance found **")
-        else:
-            print(storage.all()[key])
+        args = check_args(argv)
+        if args:
+            if len(args) != 2:
+                print("** instance id missing **")
+            else:
+                key = "{}.{}".format(args[0], args[1])
+                if key not in storage.all():
+                    print("** no instance found **")
+                else:
+                    print(storage.all()[key])
 
     def do_destroy(self, argv):
         """
